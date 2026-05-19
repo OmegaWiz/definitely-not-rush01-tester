@@ -771,6 +771,11 @@ def _parse() -> argparse.Namespace:
         help="run bonus suite for sizes 1–9\n"
              "(both eliminatory suites + features + malloc; no exhaustive)",
     )
+    p.add_argument(
+        "-c", "--recompile", action="store_true",
+        help="recompile the binary from sources before running\n"
+             "(auto-compile also runs if the binary does not exist yet)",
+    )
     return p.parse_args()
 
 
@@ -778,6 +783,17 @@ def main() -> None:
     args   = _parse()
     exe    = os.path.abspath(args.executable)
     srcdir = os.path.abspath(args.src_dir) if args.src_dir else os.path.dirname(exe)
+
+    needs_compile = args.recompile or not os.path.isfile(exe)
+    if needs_compile:
+        action = "Recompiling" if os.path.isfile(exe) else "Auto-compiling"
+        print(f"  {action} from {srcdir} …", end=" ", flush=True)
+        ok, err = _compile(srcdir, exe)
+        if not ok:
+            print()
+            print(_c(RED, f"Compilation failed:\n{err}"), file=sys.stderr)
+            sys.exit(1)
+        print(_c(GREEN, "ok"))
 
     if not os.path.isfile(exe):
         print(_c(RED, f"Executable not found: {exe}"), file=sys.stderr)

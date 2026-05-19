@@ -2,14 +2,31 @@
 
 Warning: there should be bugs in here, please report them.
 
+## Setup
+
+Clone this repo into the root of your submission directory. The tester expects your sources at `./ex00/` relative to the repo root:
+
+```
+your-submission/
+├── ex00/
+│   ├── main.c
+│   └── …
+└── definitely-not-rush01-tester/
+    ├── run.sh
+    └── tester.py
+```
+
 ## Usage
 
 ```sh
-# Build your binary first
-cc -Wall -Wextra -Werror -o rush-01 *.c
+# Auto-compile ex00/ and run standard suite
+./definitely-not-rush01-tester/run.sh
 
-# Run standard suite (eliminatory + features, size 4)
-./tester/run.sh -e ./rush-01
+# Explicit binary path
+./definitely-not-rush01-tester/run.sh -e ./ex00/rush-01
+
+# Force recompile then run
+./definitely-not-rush01-tester/run.sh -c
 
 # Show board output on failures
 ./tester/run.sh -e ./rush-01 -v
@@ -23,6 +40,7 @@ cc -Wall -Wextra -Werror -o rush-01 *.c
 | Flag | Description |
 |------|-------------|
 | `-e PATH` | Path to the `rush-01` binary (default: `../ex00/rush-01`) |
+| `-c` | Recompile from sources before running (also runs automatically if binary is missing) |
 | `-v` | Verbose — show board output on failures |
 | `-d` | Debug — annotated board with view clues on failures |
 | `-m` | malloc_strike — recompile with malloc_strike and test for crashes |
